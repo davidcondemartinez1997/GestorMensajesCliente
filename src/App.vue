@@ -1,9 +1,9 @@
 <template>
   <div id="home" class="container-fluid">
     <header class="jumbotron text-center">
-      <h1>Maestro Detalle de Cine</h1>
-      <button type="button" id="peliculas" class="btn btn-md btn-outline-primary" v-on:click="openComponent">Peliculas</button>
-      <button type="button" id="entradas" class="btn btn-md btn-outline-primary" v-on:click="openComponent">Entradas</button>
+      <h1>Maestro Detalle del Gestor de Mensajes</h1>
+      <button type="button" id="mensajes" class="btn btn-md btn-outline-primary" v-on:click="openComponent">Mensajes</button>
+      <button type="button" id="tipoMensajes" class="btn btn-md btn-outline-primary" v-on:click="openComponent">Tipo Mensaje</button>
     </header>
     
     <div id="maestrodetalle" class="col-sm-4"></div>
@@ -14,8 +14,8 @@
 <script>
   import axios from "axios"
   import Vue from 'vue'
-  import MaestroPeliculas from "./AppPelicula.vue"
-  import MaestroEntradas from "./AppEntrada.vue"
+  import MaestroMensajes from "./AppMensaje.vue"
+  //import MaestroTipoMensajes from "./AppTipoMensaje.vue"
   import {EventBus} from './EventBus.js';
   export default {
     name: 'app',
@@ -25,6 +25,7 @@
       }
     },
     methods: {
+      //Estamos tocando el DOM-------------------------------------------------------------------------------------------
       openComponent: function(e){
         if($('#' + e.target.id).hasClass("active")){
           document.getElementById("maestrodetalle").innerHTML = "";
@@ -32,22 +33,22 @@
         }else{
           $('button').removeClass("active");
           switch(e.target.id){
-            case "peliculas": 
-            $('#peliculas').addClass('active');
+            case "mensajes": 
+            $('#mensajes').addClass('active');
             new Vue({
               el: '#maestrodetalle',
-              render: h => h(MaestroPeliculas)
+              render: h => h(MaestroMensajes)
             })
 
             break;
-            case "entradas": 
-            $('#entradas').addClass('active');
+/*            case "tipoMensajes": 
+            $('#tipoMensajes').addClass('active');
             new Vue({
               el: '#maestrodetalle',
-              render: h => h(MaestroEntradas)
+              render: h => h(MaestroTipoMensajes)
             })
 
-            break;
+            break;*/
           }
         }
 

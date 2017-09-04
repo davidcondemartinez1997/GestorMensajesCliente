@@ -1,134 +1,147 @@
 <template>
- <div id="form">
-  <form v-if="seen" class="form-horizontal" onsubmit="return false">
-   <h1 class="col-sm-12">Formulario Entrada <a class="close" v-on:click="close">&times;</a></h1>
-   <div class="form-group">
-    <label  class="control-label col-sm-2">Pelicula:</label>
-    <input type="text" id="pelicula" name="pelicula" required="required" class="form-control" v-model:value="entrada.Pelicula"/>   
+  <div id="form">
+    <form v-if="seen" class="form-horizontal" onsubmit="return false">
+      <h1 class="col-sm-12">Formulario Mensaje <a class="close" v-on:click="close">&times;</a></h1>
+      <div class="form-group">
+        <label  class="control-label col-sm-2">Cabecera:</label>
+        <input type="text" id="cabecera" name="cabecera" required="required" class="form-control" v-model:value="mensaje.Cabecera"/>   
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2">Asunto:</label>
+        <input type="text" id="asunto" name="asunto" class="form-control" required="required" v-model:value="mensaje.Asunto"/>   
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2">Contenido:</label>
+        <input type="text" id="contenido" name="contenido" class="form-control" required="required" v-model:value="mensaje.Contenido"/>   
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2">Archivo:</label>
+        <input type="text" id="archivo" name="archivo" class="form-control" required="required" v-model:value="mensaje.Archivo"/>   
+      </div>
+      <div class="form-group">
+        <button id="submit" value="Enviar" class="form-control btn-success btn-block" v-on:click="enviar">Enviar</button>
+        <button id="remove" value="Eliminar" class="form-control btn-success btn-danger" v-on:click="eliminar" v-if="mensaje.Id !== -1">Eliminar</button>
+      </div>
+    </form>
   </div>
-  <div class="form-group">
-    <label class="control-label col-sm-2">Precio:</label>
-    <input type="text" id="precio" name="precio" class="form-control" required="required" v-model:value="entrada.Precio"/>   
-  </div>
-  <div class="form-group">
-    <button id="submit" value="Enviar" class="form-control btn-success btn-block" v-on:click="enviar">Enviar</button>
-    <button id="remove" value="Eliminar" class="form-control btn-success btn-danger" v-on:click="eliminar" v-if="entrada.Id !== -1">Eliminar</button>
-  </div>
-
-
-</form>
-</div>
 </template>
 
 <script>
- import axios from 'axios';
- import {EventBus} from './EventBus.js';
- let url = config.address + 'Entrada/';
- export default {
-  name: 'app',
-  data () {
-   return {
-    entrada: {},
-    seen: true,
-    idSeleccionado: undefined
-  }
-},
-methods: {
- enviar: function(){
-  let data = {
-   Pelicula: this.entrada.Pelicula,
-   Precio: this.entrada.Precio,
- }
- if(data.Pelicula !== "" && data.Precio !== "" ){
-   if(this.entrada.Id  == -1){
-     axios.post(url ,data)
-     .then(response => {
-      this.entrada.Id = response.data.Id;
-      this.entrada.Pelicula = response.data.Pelicula;
-      this.entrada.Precio = response.data.Precio;
-      this.entradaBackUp.Pelicula = response.data.Pelicula;
-      this.entradaBackUp.Precio = response.data.Precio;
-      this.fireEvent();
-    })
-     .catch(response => {
-      swal(
-        '',
-        'Ha ocurrido un error',
-        'error'
-        )
-    })
-   }
-   else{
-    data.Id = this.entrada.Id;
-    if(this.entrada.Pelicula !== this.entradaBackUp.Pelicula || this.entrada.Precio !== this.entradaBackUp.Precio){
+  import axios from 'axios';
+  import {EventBus} from './EventBus.js';
+  let url = config.address + 'Mensaje/';
+  export default {
+    name: 'app',
+    data () {
+      return {
+        mensaje: {},
+        seen: true,
+        idSeleccionado: undefined
+      }
+    },
+    methods: {
+      enviar: function(){
+        let data = {
+          Cabecera: this.mensaje.Cabecera,
+          Asunto: this.mensaje.Asunto,
+          Contenido: this.mensaje.Contenido,
+          Archivo: this.mensaje.Archivo,
+        }
 
-     axios.put(url + data.Id, data)
-     .then(response => {
-      this.fireEvent();
-      EventBus.$emit("seleccionarId", response.data.Pelicula.Id);
-    })
-     .catch(response => {
-      swal(
-        '',
-        'Ha ocurrido un error',
-        'error'
-        )
-    })
-   }else{
-    swal(
-      '',
-      'Los datos no han cambiado',
-      'info'
-      )
-  }
-}
-}
+        //Validación:  Puedo guardar datos aunque esten los campos vacios-----------------------------------------------------------------------------
+        if(data.Cabecera !== "" && data.Asunto !== "" && data.Contenido !== "" && data.Archivo !== ""){
+          if(this.mensaje.Id  == -1){
+            axios.post(url ,data)
+            .then(response => {
+              this.mensaje.Id = response.data.Id;
+              this.mensaje.Cabecera = response.data.Cabecera;
+              this.mensaje.Asunto = response.data.Asunto;
+              this.mensaje.Contenido = response.data.Contenido;
+              this.mensaje.Archivo = response.data.Archivo;
+              this.mensajeBackUp.Cabecera = response.data.Cabecera;
+              this.mensajeBackUp.Asunto = response.data.Asunto;
+              this.mensajeBackUp.Contenido = response.data.Contenido;
+              this.mensajeBackUp.Archivo = response.data.Archivo;
+              this.fireEvent();
+            })
+            .catch(response => {
+              swal(
+                '',
+                'Ha ocurrido un error',
+                'error'
+              )
+            })
+          }
+          else{
+            data.Id = this.mensaje.Id;
+            if(this.mensaje.Cabecera !== this.mensajeBackUp.Cabecera || this.mensaje.Asunto !== this.mensajeBackUp.Asunto || this.mensaje.Contenido !== this.mensajeBackUp.Contenido || this.mensaje.Archivo !== this.mensajeBackUp.Archivo){
 
+              axios.put(url + data.Id, data)
+              .then(response => {
+                this.fireEvent();
+                EventBus.$emit("seleccionarId", response.data.Cabecera.Id);
+              })
+           //Al actualizar sale este mensaje y no ha habido error------------------------------------------------------------------------
+              .catch(response => {
+                swal(
+                  '',
+                  'Ha ocurrido un error',
+                  'error'
+                )
+              })
+            }
+            else{
+              swal(
+                '',
+                'Los datos no han cambiado',
+                'info'
+              )
+            }     
+          }
+        }
+      },
+      close: function(){
+        this.seen = false;
+        EventBus.$emit("seleccionarId", undefined);
+      },
+      fireEvent: function(){
+        swal(
+            '',
+            'Operacion completada con exito!',
+            'success'
+        );
+        EventBus.$emit("updateMensaje", this.mensaje);
+      },
+      eliminar: function(){
+        if(this.mensaje.Id != -1){
+          this.seen = false;
+          axios.delete(url + this.mensaje.Id)
+          .then(response => {
+            this.fireEvent();
+          })
+          .catch(response => {
+            swal(
+              '',
+              'Ha ocurrido un error',
+              'error'
+            )
+          })
+        }
+      }
+    },
 
-},
-close: function(){
-  this.seen = false;
-  EventBus.$emit("seleccionarId", undefined);
-},
-fireEvent: function(){
-  swal(
-    '',
-    'Operacion completada con exito!',
-    'success'
-    );
-  EventBus.$emit("updateEntrada", this.entrada);
-},
-eliminar: function(){
-  if(this.entrada.Id != -1){
-   this.seen = false;
-   axios.delete(url + this.entrada.Id)
-   .then(response => {
-    this.fireEvent();
-  })
-   .catch(response => {
-    swal(
-      '',
-      'Ha ocurrido un error',
-      'error'
-      )
-  })
- }
-
-}
-
-},
-
-created() {
-  this.seen = true;
-  this.entrada = this.$parent.entrada;
-  this.idSeleccionado = this.$parent.idSeleccionado;
-  this.entradaBackUp = {
-    Pelicula: this.entrada.Pelicula,
-    Precio:  this.entrada.Precio
-  }
-}
-
-}
+    created() {
+      this.seen = true;
+      this.mensaje = this.$parent.mensaje;
+      this.idSeleccionado = this.$parent.idSeleccionado;
+      this.mensajeBackUp = {
+        Cabecera: this.mensaje.Cabecera,
+        Asunto:  this.mensaje.Asunto,
+        Contenido: this.mensaje.Contenido,
+        Archivo:  this.mensaje.Archivo
+      }
+    }
+  } 
 </script>
 
 <style>
