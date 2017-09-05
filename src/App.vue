@@ -14,8 +14,8 @@
 <script>
   import axios from "axios"
   import Vue from 'vue'
-  import MaestroPeliculas from "./AppPelicula.vue"
-  import MaestroEntradas from "./AppEntrada.vue"
+  import MaestroTipoMensaje from "./AppTipoMensaje.vue"
+  import MaestroMensaje from "./AppMensaje.vue"
   import {EventBus} from './EventBus.js';
   export default {
     name: 'app',

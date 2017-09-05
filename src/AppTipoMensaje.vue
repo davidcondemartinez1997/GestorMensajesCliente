@@ -1,22 +1,22 @@
 <template>
   <div id="maestrodetalle">
     <div id="lista">
-      <h1>Peliculas</h1>
-      <table v-if="peliculas && peliculas.length" class="table table-bordered">
+      <h1>Tipos de mensajes</h1>
+      <table v-if="tipos && tipos.length" class="table table-bordered">
         <thead class="thead-inverse">
           <tr>
-            <th>Titulo</th>
-            <th>Director</th>
-            <th>Pais</th>
-            <th>Genero</th>
+            <th>Nombre</th>
+            <th>Fichero</th>
+            <th>Destacado</th>
+            <th>Base</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="pelicula of peliculas" v-on:click="detail" v-bind:id="pelicula.Id" v-bind:class="{ 'table-active': pelicula.Id == idSeleccionado}">
-            <td>{{pelicula.Titulo}}</td>
-            <td> {{pelicula.Director}}</td>
-            <td> {{pelicula.Pais}}</td>
-            <td> {{pelicula.Genero}}</td>
+          <tr v-for="tipo of tipos" v-on:click="detail" v-bind:id="tipo.Id" v-bind:class="{ 'table-active': tipo.Id == idSeleccionado}">
+            <td>{{tipo.Nombre}}</td>
+            <td> {{tipo.Fichero}}</td>
+            <td> {{tipo.Destacado}}</td>
+            <td> {{tipo.Base}}</td>
           </tr>
         </tbody>
       </table>
@@ -29,7 +29,7 @@
 
 <script>
   import axios from 'axios';
-  import Form from './FormPelicula.vue'
+  import Form from './FormTipoMensaje.vue'
   import {EventBus} from './EventBus.js';
   import Vue from 'vue'
 
@@ -37,7 +37,7 @@
     name: 'app',
     data () {
       return {
-        peliculas: undefined,
+        tipos: undefined,
         idSeleccionado: undefined
       }
     },
@@ -48,52 +48,52 @@
           id = e.target.parentNode.id;
         }
         this.idSeleccionado = id;
-        this.peliculas.forEach((p, index) => {
+        this.tipos.forEach((p, index) => {
           if(p.Id == id){
-            let pelicula = {
-              Titulo: p.Titulo,
+            let tipo = {
+              Nombre: p.Nombre,
               Director: p.Director,
-              Pais: p.Pais,
-              Genero: p.Genero,
+              Destacado: p.Destacado,
+              Base: p.Base,
               Id: p.Id
             }
-            this.openDetail(pelicula);
+            this.openDetail(tipo);
           }
         });
       },
       nuevo: function (e) {
-        let pelicula = {
-            Titulo: undefined,
+        let tipo = {
+            Nombre: undefined,
             Director: undefined,
-            Pais: undefined,
-            Genero: undefined,
+            Destacado: undefined,
+            Base: undefined,
             Id: -1
         }
-        this.openDetail(pelicula);
+        this.openDetail(tipo);
       },
-      openDetail: function(pelicula){
+      openDetail: function(tipo){
         new Vue({
           el: '#form',
           render: h => h(Form),
           data: {
-            pelicula:pelicula,
+            tipo:tipo,
             idSeleccionado: this.idSeleccionado
           },
         });
         EventBus.$on("seleccionarId",(id)=>{this.idSeleccionado = id});
       },
       init: function(){
-        let url = config.address + 'Pelicula/';
+        let url = config.address + 'TipoMensaje/';
         axios.get(url)
         .then(response => {
-          this.peliculas = response.data;
+          this.tipos = response.data;
         })
       }
 
     },
     created() {
       this.init();
-      EventBus.$on('updatePelicula', () => {
+      EventBus.$on('updateTipoMensaje', () => {
         this.init();
       });
 

@@ -27,7 +27,7 @@
 <script>
   import axios from 'axios';
   import {EventBus} from './EventBus.js';
-  import Form from './FormEntrada.vue'
+  import Form from './FormMensaje.vue'
   import Vue from 'vue'
 
   export default {

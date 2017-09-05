@@ -2,14 +2,14 @@
   <div id="form">
     <form v-if="seen" class="form-horizontal" onsubmit="return false" >
 
-      <h1>Formulario Pelicula <a class="close" v-on:click="close">&times;</a></h1>
+      <h1>Formulario Tipo de Mensaje <a class="close" v-on:click="close">&times;</a></h1>
       <div class="form-group">
-        <label class="control-label">Titulo:</label>
-        <input type="text" id="titulo" name="titulo" class="form-control" required="required" v-model:value="pelicula.Titulo"/>   
+        <label class="control-label">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" class="form-control" required="required" v-model:value="tipoMensaje.Nombre"/>   
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2">Director:</label>
-        <input type="text" id="director" name="director" class="form-control" required="required"  v-model:value="pelicula.Director"/>   
+        <input type="text" id="director" name="director" class="form-control" required="required"  v-model:value="tipoMensaje.Director"/>   
       </div>
 
       <div id="countries" class="form-group">
@@ -20,7 +20,7 @@
       </div>
       <div class="form-group">
         <button id="submit" value="Enviar" class="form-control btn-success btn-block" v-on:click="enviar">Enviar</button>
-        <button id="remove" value="Eliminar" class="form-control btn-success btn-danger" v-on:click="eliminar" v-if="pelicula.Id !== -1">Eliminar</button>
+        <button id="remove" value="Eliminar" class="form-control btn-success btn-danger" v-on:click="eliminar" v-if="tipoMensaje.Id !== -1">Eliminar</button>
       </div>
 
     </form>
@@ -31,15 +31,13 @@
   import axios from 'axios';
   import {EventBus} from './EventBus.js';
   import Vue from 'vue'
-  import FilmGenres from './FilmGenres.vue';
-  import Countries from './Countries.vue';
 
-  let url = config.address + 'Pelicula/';
+  let url = config.address + 'TipoMensaje/';
   export default {
     name: 'app',
     data () {
       return {
-       pelicula: {},
+       tipoMensaje: {},
        seen: true,
        idSeleccionado: undefined
      }
@@ -48,21 +46,21 @@
     enviar: function(){
       let preventUpdate = false;
       let data = {
-        Titulo: this.pelicula.Titulo,
-        Director: this.pelicula.Director,
-        Pais: this.pelicula.Pais,
-        Genero: this.pelicula.Genero,
-        Id: this.pelicula.Id
+        Nombre: this.tipoMensaje.Nombre,
+        Director: this.tipoMensaje.Director,
+        Destacado: this.tipoMensaje.Destacado,
+        Base: this.tipoMensaje.Base,
+        Id: this.tipoMensaje.Id
       }
-      if(data.Titulo !== "" && data.Director !== "" && data.Pais !== "" && data.Genero !== ""){
+      if(data.Nombre !== "" && data.Director !== "" && data.Destacado !== "" && data.Base !== ""){
         if(data.Id == -1){
           axios.post(url, data)
           .then(response => {
-            this.pelicula.Id = response.data.Id;
-            this.pelicula.Titulo = response.data.Titulo;
-            this.pelicula.Director = response.data.Director;
-            this.pelicula.Pais = response.data.Pais;
-            this.pelicula.Genero = response.data.Genero;
+            this.tipoMensaje.Id = response.data.Id;
+            this.tipoMensaje.Nombre = response.data.Nombre;
+            this.tipoMensaje.Director = response.data.Director;
+            this.tipoMensaje.Destacado = response.data.Destacado;
+            this.tipoMensaje.Base = response.data.Base;
             this.fireEvent();
           })
           .catch(response => {
@@ -73,8 +71,8 @@
               )
           })
         }else{
-          if(this.peliculaBackUp.Titulo !== this.pelicula.Titulo || this.peliculaBackUp.Director !== this.pelicula.Director  || this.peliculaBackUp.Pais !== this.pelicula.Pais || this.peliculaBackUp.Genero !== this.pelicula.Genero){
-            if(data !== this.pelicula){
+          if(this.tipoMensajeBackUp.Nombre !== this.tipoMensaje.Nombre || this.tipoMensajeBackUp.Director !== this.tipoMensaje.Director  || this.tipoMensajeBackUp.Destacado !== this.tipoMensaje.Destacado || this.tipoMensajeBackUp.Base !== this.tipoMensaje.Base){
+            if(data !== this.tipoMensaje){
               axios.put(url + data.Id, data)
               .then(response => {
                 this.fireEvent();
@@ -105,13 +103,13 @@
         'Operacion completada con exito!',
         'success'
         )
-      EventBus.$emit("updatePelicula", this.pelicula);
+      EventBus.$emit("updateTipoMensaje", this.tipoMensaje);
     },
 
     eliminar: function(){
-      if(this.pelicula.Id != -1){
+      if(this.tipoMensaje.Id != -1){
         this.seen = false;
-        axios.delete(url + this.pelicula.Id)
+        axios.delete(url + this.tipoMensaje.Id)
         .then(response => {
           this.fireEvent();
         })
@@ -132,33 +130,15 @@
   },
   created() {
     this.seen = true;
-    this.pelicula = this.$parent.pelicula;
-    this.peliculaBackUp = {
-      Titulo: this.pelicula.Titulo,
-      Director:  this.pelicula.Director,
-      Pais: this.pelicula.Pais,
-      Genero: this.pelicula.Genero
+    this.tipoMensaje = this.$parent.tipoMensaje;
+    this.tipoMensajeBackUp = {
+      Nombre: this.tipoMensaje.Nombre,
+      Director:  this.tipoMensaje.Director,
+      Destacado: this.tipoMensaje.Destacado,
+      Base: this.tipoMensaje.Base
     };
     this.idSeleccionado = this.$parent.idSeleccionado;
   },
-  mounted(){
-    console.log(this.pelicula.Genero);
-    new Vue({
-      el: '#FilmGenres',
-      render: h => h(FilmGenres),
-      data: {
-        pelicula: this.pelicula
-      }
-    });
-    new Vue({
-      el: '#countries',
-      render: h => h(Countries),
-      data: {
-        pais: this.pelicula.Pais
-      }
-    });
-  }
-
 }
 </script>
 
