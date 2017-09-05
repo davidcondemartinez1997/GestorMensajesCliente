@@ -5,20 +5,22 @@
       <table v-if="mensajes && mensajes.length" class="table table-bordered table-hover">
         <thead class="thead-inverse">
           <tr>
-            <th>Cabecera</th>
+            <th>Destinatario</th>
             <th>Asunto</th>
             <th>Contenido</th>
             <th>Archivo</th>
-            <!--<th>Fecha</th>-->
+            <th>Fecha</th>
+            <th>Destacado</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="mensaje of mensajes" v-on:click="detail" v-bind:id="mensaje.Id" v-bind:class="{ 'table-active': mensaje.Id == idSeleccionado}">
-            <td> {{mensaje.Cabecera}} </td>
+            <td> {{mensaje.Destinatario}} </td>
             <td> {{mensaje.Asunto}} </td>
             <td> {{mensaje.Contenido}} </td>
             <td> {{mensaje.Archivo}} </td>
-            <!--<td> {{mensaje.Fecha}} </td>-->
+            <td> {{new Date(mensaje.Fecha).toLocaleString()}} </td>
+            <td> {{mensaje.Destacado}} </td>
           </tr>
         </tbody>
       </table>
@@ -55,10 +57,11 @@
         this.mensajes.forEach((p, index) => {
           if(p.Id == id){
             let mensaje = {
-              Cabecera: p.Cabecera,
+              Destinatario: p.Destinatario,
               Asunto: p.Asunto,
               Contenido: p.Contenido,
               Archivo: p.Archivo,
+              Destacado: p.Destacado,
               Id: p.Id
             }
             this.openDetail(mensaje);
@@ -68,10 +71,11 @@
       nuevo: function (e) {
         this.idSeleccionado = undefined;
         let mensaje =  {
-          Cabecera: undefined,
+          Destinatario: undefined,
           Asunto: undefined,
           Contenido: undefined,
           Archivo: undefined,
+          Destacado:undefined,
           Id:-1
         }
         this.openDetail(mensaje);
