@@ -50,33 +50,33 @@
         this.idSeleccionado = id;
         this.tipos.forEach((p, index) => {
           if(p.Id == id){
-            let tipo = {
+            let tipoMensaje = {
               Nombre: p.Nombre,
               Director: p.Director,
               Destacado: p.Destacado,
               Base: p.Base,
               Id: p.Id
             }
-            this.openDetail(tipo);
+            this.openDetail(tipoMensaje);
           }
         });
       },
       nuevo: function (e) {
-        let tipo = {
+        let tipoMensaje = {
             Nombre: undefined,
             Director: undefined,
             Destacado: undefined,
             Base: undefined,
             Id: -1
         }
-        this.openDetail(tipo);
+        this.openDetail(tipoMensaje);
       },
-      openDetail: function(tipo){
+      openDetail: function(tipoMensaje){
         new Vue({
           el: '#form',
           render: h => h(Form),
           data: {
-            tipo:tipo,
+            tipoMensaje:tipoMensaje,
             idSeleccionado: this.idSeleccionado
           },
         });

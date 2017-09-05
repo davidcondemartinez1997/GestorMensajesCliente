@@ -1,18 +1,24 @@
 <template>
   <div id="maestrodetalle">
     <div id="lista">
-      <h1>Entradas</h1>
-      <table v-if="entradas && entradas.length" class="table table-bordered table-hover">
+      <h1>Mensajes</h1>
+      <table v-if="mensajes && mensajes.length" class="table table-bordered table-hover">
         <thead class="thead-inverse">
           <tr>
-            <th>Pelicula</th>
-            <th>Precio</th>
+            <th>Cabecera</th>
+            <th>Asunto</th>
+            <th>Contenido</th>
+            <th>Archivo</th>
+            <!--<th>Fecha</th>-->
           </tr>
         </thead>
         <tbody>
-          <tr v-for="entrada of entradas" v-on:click="detail" v-bind:id="entrada.Id" v-bind:class="{ 'table-active': entrada.Id == idSeleccionado}">
-            <td>{{entrada.Pelicula}}</td>
-            <td> {{entrada.Precio}}</td>
+          <tr v-for="mensaje of mensajes" v-on:click="detail" v-bind:id="mensaje.Id" v-bind:class="{ 'table-active': mensaje.Id == idSeleccionado}">
+            <td> {{mensaje.Cabecera}} </td>
+            <td> {{mensaje.Asunto}} </td>
+            <td> {{mensaje.Contenido}} </td>
+            <td> {{mensaje.Archivo}} </td>
+            <!--<td> {{mensaje.Fecha}} </td>-->
           </tr>
         </tbody>
       </table>
@@ -34,7 +40,7 @@
     name: 'app',
     data () {
       return {
-        entradas: undefined,
+        mensajes: undefined,
         idSeleccionado: undefined
       }
     },
@@ -46,61 +52,63 @@
         }
         this.idSeleccionado = id;
 
-        this.entradas.forEach((p, index) => {
+        this.mensajes.forEach((p, index) => {
           if(p.Id == id){
-            let entrada = {
-              Pelicula: p.Pelicula,
-              Precio: p.Precio,
+            let mensaje = {
+              Cabecera: p.Cabecera,
+              Asunto: p.Asunto,
+              Contenido: p.Contenido,
+              Archivo: p.Archivo,
               Id: p.Id
             }
-            this.openDetail(entrada);
+            this.openDetail(mensaje);
           }
         });
       },
       nuevo: function (e) {
         this.idSeleccionado = undefined;
-        let entrada =  {
-          Pelicula: undefined,
-          Precio: undefined,
+        let mensaje =  {
+          Cabecera: undefined,
+          Asunto: undefined,
+          Contenido: undefined,
+          Archivo: undefined,
           Id:-1
         }
-        this.openDetail(entrada);
+        this.openDetail(mensaje);
       },
 
-      openDetail:function(entrada){
+      openDetail:function(mensaje){
         new Vue({
           el: '#form',
           render: h => h(Form),
           data: {
-            entrada:entrada,
+            mensaje:mensaje,
             idSeleccionado: this.idSeleccionado
           },
         });
         EventBus.$on("seleccionarId",(id)=>{this.idSeleccionado = id});
       },
       init: function(){
-        let url = config.address + 'Entrada/';
+        let url = config.address + 'Mensaje/';
         axios.get(url)
         .then(response => {
-          this.entradas = response.data;
+          this.mensajes = response.data;
         })
         .catch(response => {
           swal(
             '',
             'Ha ocurrido un error',
             'error'
-            )
+          )
         })
       }
 
     },
     created() {
       this.init();
-      EventBus.$on('updateEntrada', (() => {
+      EventBus.$on('updateMensaje', (() => {
         this.init();
       }));
-
-
     }
   }
 </script>

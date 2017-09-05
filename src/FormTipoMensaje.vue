@@ -5,19 +5,25 @@
       <h1>Formulario Tipo de Mensaje <a class="close" v-on:click="close">&times;</a></h1>
       <div class="form-group">
         <label class="control-label">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" class="form-control" required="required" v-model:value="tipoMensaje.Nombre"/>   
+        <input type="text" id="nombre" name="nombre" class="form-control" v-model:value="tipoMensaje.Nombre"/>   
       </div>
       <div class="form-group">
-        <label class="control-label col-sm-2">Director:</label>
-        <input type="text" id="director" name="director" class="form-control" required="required"  v-model:value="tipoMensaje.Director"/>   
+
+        <input type="checkbox" id="fichero" name="fichero"  v-model="tipoMensaje.Fichero"/> 
+        <label class="">Permitir tener ficheros adjuntos</label>
       </div>
 
-      <div id="countries" class="form-group">
-
+      <div class="form-group">
+        <input type="checkbox" id="destacado" name="destacado" v-model:value="tipoMensaje.Destacado" />
+        <label class="">Permitir crear mensajes destacados</label>
       </div>
 
-      <div class="form-group" id="FilmGenres">        
+      <div class="form-group">
+        <label class="control-label">Basado en:</label>
+        <input type="radio" name="ficheros" value="texto" v-model="tipoMensaje.Base"> Texto
+        <input type="radio" name="ficheros" value="fichero"  v-model="tipoMensaje.Base"> Ficheros
       </div>
+
       <div class="form-group">
         <button id="submit" value="Enviar" class="form-control btn-success btn-block" v-on:click="enviar">Enviar</button>
         <button id="remove" value="Eliminar" class="form-control btn-success btn-danger" v-on:click="eliminar" v-if="tipoMensaje.Id !== -1">Eliminar</button>
@@ -47,18 +53,18 @@
       let preventUpdate = false;
       let data = {
         Nombre: this.tipoMensaje.Nombre,
-        Director: this.tipoMensaje.Director,
+        Fichero: this.tipoMensaje.Fichero,
         Destacado: this.tipoMensaje.Destacado,
         Base: this.tipoMensaje.Base,
-        Id: this.tipoMensaje.Id
       }
-      if(data.Nombre !== "" && data.Director !== "" && data.Destacado !== "" && data.Base !== ""){
-        if(data.Id == -1){
+      if(this.isFormularioValido(data)){
+        if(this.tipoMensaje.Id == -1){
+
           axios.post(url, data)
           .then(response => {
             this.tipoMensaje.Id = response.data.Id;
             this.tipoMensaje.Nombre = response.data.Nombre;
-            this.tipoMensaje.Director = response.data.Director;
+            this.tipoMensaje.Fichero = response.data.Fichero;
             this.tipoMensaje.Destacado = response.data.Destacado;
             this.tipoMensaje.Base = response.data.Base;
             this.fireEvent();
@@ -71,11 +77,12 @@
               )
           })
         }else{
-          if(this.tipoMensajeBackUp.Nombre !== this.tipoMensaje.Nombre || this.tipoMensajeBackUp.Director !== this.tipoMensaje.Director  || this.tipoMensajeBackUp.Destacado !== this.tipoMensaje.Destacado || this.tipoMensajeBackUp.Base !== this.tipoMensaje.Base){
-            if(data !== this.tipoMensaje){
+          if(this.tipoMensajeBackUp.Nombre !== this.tipoMensaje.Nombre || this.tipoMensajeBackUp.Fichero !== this.tipoMensaje.Fichero  || this.tipoMensajeBackUp.Destacado !== this.tipoMensaje.Destacado || this.tipoMensajeBackUp.Base !== this.tipoMensaje.Base){
+            data.Id = this.tipoMensaje.Id;
               axios.put(url + data.Id, data)
               .then(response => {
                 this.fireEvent();
+                EventBus.$emit("seleccionarId", response.data.Id);
               })
               .catch(response => {
                 swal(
@@ -84,7 +91,6 @@
                   'error'
                   )
               })
-            }
           }else{
             swal(
               '',
@@ -96,7 +102,13 @@
         }
       }
     },
+    isFormularioValido: function(data){
+      if(!data.Nombre && data.Nombre.trim() == ''){
+        return 'El nombre deberia estar relleno'
+      }
 
+      return true;
+    },
     fireEvent: function(){
       swal(
         '',
@@ -133,7 +145,7 @@
     this.tipoMensaje = this.$parent.tipoMensaje;
     this.tipoMensajeBackUp = {
       Nombre: this.tipoMensaje.Nombre,
-      Director:  this.tipoMensaje.Director,
+      Fichero:  this.tipoMensaje.Fichero,
       Destacado: this.tipoMensaje.Destacado,
       Base: this.tipoMensaje.Base
     };

@@ -1,9 +1,9 @@
 <template>
   <div id="home" class="container-fluid">
     <header class="jumbotron text-center">
-      <h1>Maestro Detalle de Cine</h1>
-      <button type="button" id="peliculas" class="btn btn-md btn-outline-primary" v-on:click="openComponent">Peliculas</button>
-      <button type="button" id="entradas" class="btn btn-md btn-outline-primary" v-on:click="openComponent">Entradas</button>
+      <h1>Maestro Detalle del Gestor de Mensajes</h1>
+      <button type="button" id="mensajes" class="btn btn-md btn-outline-primary" v-on:click="openComponent">Mensajes</button>
+      <button type="button" id="tipoMensaje" class="btn btn-md btn-outline-primary" v-on:click="openComponent">Tipo Mensaje</button>
     </header>
     
     <div id="maestrodetalle" class="col-sm-4"></div>
@@ -16,6 +16,7 @@
   import Vue from 'vue'
   import MaestroTipoMensaje from "./AppTipoMensaje.vue"
   import MaestroMensaje from "./AppMensaje.vue"
+
   import {EventBus} from './EventBus.js';
   export default {
     name: 'app',
@@ -25,6 +26,7 @@
       }
     },
     methods: {
+      //Estamos tocando el DOM-------------------------------------------------------------------------------------------
       openComponent: function(e){
         if($('#' + e.target.id).hasClass("active")){
           document.getElementById("maestrodetalle").innerHTML = "";
@@ -32,19 +34,19 @@
         }else{
           $('button').removeClass("active");
           switch(e.target.id){
-            case "peliculas": 
-            $('#peliculas').addClass('active');
+            case "mensajes": 
+            $('#mensajes').addClass('active');
             new Vue({
               el: '#maestrodetalle',
-              render: h => h(MaestroPeliculas)
+              render: h => h(MaestroMensaje)
             })
 
             break;
-            case "entradas": 
-            $('#entradas').addClass('active');
+            case "tipoMensaje": 
+            $('#tipoMensaje').addClass('active');
             new Vue({
               el: '#maestrodetalle',
-              render: h => h(MaestroEntradas)
+              render: h => h(MaestroTipoMensaje)
             })
 
             break;
@@ -60,5 +62,4 @@
 </script>
 
 <style>
-
 </style>
