@@ -20,7 +20,8 @@
             <td> {{mensaje.Contenido}} </td>
             <td> {{mensaje.Archivo}} </td>
             <td> {{new Date(mensaje.Fecha).toLocaleString()}} </td>
-            <td> {{mensaje.Destacado}} </td>
+            <td v-if="mensaje.Destacado"> Activado </td>
+            <td v-else> Desactivado </td>
           </tr>
         </tbody>
       </table>

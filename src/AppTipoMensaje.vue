@@ -13,9 +13,11 @@
         </thead>
         <tbody>
           <tr v-for="tipo of tipos" v-on:click="detail" v-bind:id="tipo.Id" v-bind:class="{ 'table-active': tipo.Id == idSeleccionado}">
-            <td>{{tipo.Nombre}}</td>
-            <td> {{tipo.Fichero}}</td>
-            <td> {{tipo.Destacado}}</td>
+            <td> {{tipo.Nombre}}</td>
+            <td v-if= "tipo.Fichero"> Activado </td>
+            <td v-else> Desactivado </td>
+            <td v-if="tipo.Destacado"> Activado </td>
+            <td v-else> Desactivado </td>
             <td> {{tipo.Base}}</td>
           </tr>
         </tbody>

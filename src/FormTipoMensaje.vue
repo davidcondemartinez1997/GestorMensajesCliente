@@ -20,7 +20,7 @@
 
       <div class="form-group">
         <label class="control-label">Basado en:</label>
-        <input type="radio" name="ficheros" value="texto" v-model="tipoMensaje.Base"> Texto
+        <input type="radio" name="ficheros" value="texto" v-model="tipoMensaje.Base" checked> Texto
         <input type="radio" name="ficheros" value="fichero"  v-model="tipoMensaje.Base"> Ficheros
       </div>
 
@@ -120,18 +120,35 @@
 
     eliminar: function(){
       if(this.tipoMensaje.Id != -1){
-        this.seen = false;
-        axios.delete(url + this.tipoMensaje.Id)
-        .then(response => {
-          this.fireEvent();
+        swal({
+          title: '¿Quieres eliminar el tipo de mensaje?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Si, eliminar!',
+          cancelButtonText: 'Cancelar'
+        }).then( () => {
+            this.seen = false;
+            axios.delete(url + this.tipoMensaje.Id)
+            .then(response => {
+              this.fireEvent();
+              swal(
+                '',
+                'El tipo de mensaje ha sido borrado.',
+                'success'
+                )
+            })
+            .catch(response => {
+              swal(
+                '',
+                'Ha ocurrido un error',
+                'error'
+                )
+            })
         })
-        .catch(response => {
-          swal(
-            '',
-            'Ha ocurrido un error',
-            'error'
-            )
-        })
+
+
       }
     },
 

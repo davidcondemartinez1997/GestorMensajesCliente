@@ -16,11 +16,11 @@
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2">Archivo:</label>
-        <input type="file" id="archivo" name="archivo" class="form-control"/>   
+        <input type="file" id="archivo" name="archivo" class="form-control" />   
       </div>
-      <div>
+      <div class="form-group">
         <input type="checkbox" id="dest" value="Activado" v-model:value="mensaje.Destacado"/>
-        <label for="dest">Destacado</label>
+        <label for="dest">Permitir destacar mensaje</label>
       </div>
       <div class="form-group">
         <button id="submit" value="Enviar" class="form-control btn-success btn-block" v-on:click="enviar">Enviar</button>
@@ -61,6 +61,7 @@
           if(this.mensaje.Id  == -1){
             axios.post(url ,data)
             .then(response => {
+              this.mensaje.Id = response.data.Id;
               this.mensaje.Destinatario = response.data.Destinatario;
               this.mensaje.Asunto = response.data.Asunto;
               this.mensaje.Contenido = response.data.Contenido;
@@ -127,18 +128,35 @@
       },
       eliminar: function(){
         if(this.mensaje.Id != -1){
-          this.seen = false;
-          axios.delete(url + this.mensaje.Id)
-          .then(response => {
-            this.fireEvent();
+          swal({
+            title: '¿Quieres eliminar el mensaje?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar!',
+            cancelButtonText: 'Cancelar'
+          }).then( () => {
+              this.seen = false;
+              axios.delete(url + this.mensaje.Id)
+              .then(response => {
+                this.fireEvent();
+                swal(
+                  '',
+                  'El mensaje ha sido borrado.',
+                  'success'
+                  )
+              })
+              .catch(response => {
+                swal(
+                  '',
+                  'Ha ocurrido un error',
+                  'error'
+                  )
+              })
           })
-          .catch(response => {
-            swal(
-              '',
-              'Ha ocurrido un error',
-              'error'
-            )
-          })
+
+
         }
       }
     },
@@ -169,10 +187,6 @@
     if(!data.Contenido || data.Contenido.trim() == ''){
       return 'El contenido debe estar relleno'
     }
-
-/*    if(!data.Archivo || data.Archivo.trim() == ''){
-      return 'El archivo debe estar relleno'
-    }*/
 
     return '';
   } 
