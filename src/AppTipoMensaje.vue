@@ -66,9 +66,9 @@
       nuevo: function (e) {
         let tipoMensaje = {
             Nombre: undefined,
-            Director: undefined,
+            Fichero: undefined,
             Destacado: undefined,
-            Base: undefined,
+            Base: "texto",
             Id: -1
         }
         this.openDetail(tipoMensaje);

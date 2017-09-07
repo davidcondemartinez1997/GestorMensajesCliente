@@ -6,6 +6,7 @@
         <thead class="thead-inverse">
           <tr>
             <th>Destinatario</th>
+            <th>TipoMensaje</th>
             <th>Asunto</th>
             <th>Contenido</th>
             <th>Archivo</th>
@@ -16,12 +17,13 @@
         <tbody>
           <tr v-for="mensaje of mensajes" v-on:click="detail" v-bind:id="mensaje.Id" v-bind:class="{ 'table-active': mensaje.Id == idSeleccionado}">
             <td> {{mensaje.Destinatario}} </td>
+            <td> {{mensaje.TipoMensaje}}</td>
             <td> {{mensaje.Asunto}} </td>
             <td> {{mensaje.Contenido}} </td>
             <td> {{mensaje.Archivo}} </td>
             <td> {{new Date(mensaje.Fecha).toLocaleString()}} </td>
-            <td v-if="mensaje.Destacado"> Activado </td>
-            <td v-else> Desactivado </td>
+            <td v-if="mensaje.Destacado == true"> Activado </td>
+            <td v-else>Desactivado</td>
           </tr>
         </tbody>
       </table>

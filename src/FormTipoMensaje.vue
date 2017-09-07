@@ -9,7 +9,7 @@
       </div>
       <div class="form-group">
 
-        <input type="checkbox" id="fichero" name="fichero"  v-model="tipoMensaje.Fichero"/> 
+        <input type="checkbox" id="fichero" name="fichero"  v-model:value="tipoMensaje.Fichero"/> 
         <label class="">Permitir tener ficheros adjuntos</label>
       </div>
 
@@ -20,8 +20,8 @@
 
       <div class="form-group">
         <label class="control-label">Basado en:</label>
-        <input type="radio" name="ficheros" value="texto" v-model="tipoMensaje.Base" checked> Texto
-        <input type="radio" name="ficheros" value="fichero"  v-model="tipoMensaje.Base"> Ficheros
+        <input type="radio" name="ficheros" value="texto" v-model:value="tipoMensaje.Base"> Texto
+        <input type="radio" name="ficheros" value="fichero"  v-model:value="tipoMensaje.Base"> Ficheros
       </div>
 
       <div class="form-group">
@@ -57,7 +57,8 @@
         Destacado: this.tipoMensaje.Destacado,
         Base: this.tipoMensaje.Base,
       }
-      if(this.isFormularioValido(data)){
+      let mensajeValidacion = this.isFormularioValido(data);
+      if(mensajeValidacion == ''){
         if(this.tipoMensaje.Id == -1){
 
           axios.post(url, data)
@@ -79,18 +80,18 @@
         }else{
           if(this.tipoMensajeBackUp.Nombre !== this.tipoMensaje.Nombre || this.tipoMensajeBackUp.Fichero !== this.tipoMensaje.Fichero  || this.tipoMensajeBackUp.Destacado !== this.tipoMensaje.Destacado || this.tipoMensajeBackUp.Base !== this.tipoMensaje.Base){
             data.Id = this.tipoMensaje.Id;
-              axios.put(url + data.Id, data)
-              .then(response => {
-                this.fireEvent();
-                EventBus.$emit("seleccionarId", response.data.Id);
-              })
-              .catch(response => {
-                swal(
-                  '',
-                  'Ha ocurrido un error',
-                  'error'
-                  )
-              })
+            axios.put(url + data.Id, data)
+            .then(response => {
+              this.fireEvent();
+              EventBus.$emit("seleccionarId", response.data.Id);
+            })
+            .catch(response => {
+              swal(
+                '',
+                'Ha ocurrido un error',
+                'error'
+                )
+            })
           }else{
             swal(
               '',
@@ -100,14 +101,20 @@
           }
 
         }
+      }else{
+        swal(
+          '',
+          mensajeValidacion,
+          'error'
+          )
       }
     },
     isFormularioValido: function(data){
-      if(!data.Nombre && data.Nombre.trim() == ''){
+      if(!data.Nombre || data.Nombre.trim() == ''){
         return 'El nombre deberia estar relleno'
       }
 
-      return true;
+      return '';
     },
     fireEvent: function(){
       swal(
