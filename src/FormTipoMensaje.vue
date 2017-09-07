@@ -121,21 +121,26 @@
         '',
         'Operacion completada con exito!',
         'success'
-        )
-      EventBus.$emit("updateTipoMensaje", this.tipoMensaje);
-    },
+        ).then( () =>  {
+            EventBus.$emit("updateTipoMensaje", this.tipoMensaje);
+          }
 
-    eliminar: function(){
-      if(this.tipoMensaje.Id != -1){
-        swal({
-          title: '¿Quieres eliminar el tipo de mensaje?',
-          type: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Si, eliminar!',
-          cancelButtonText: 'Cancelar'
-        }).then( () => {
+
+        );
+
+      },
+
+      eliminar: function(){
+        if(this.tipoMensaje.Id != -1){
+          swal({
+            title: '¿Quieres eliminar el tipo de mensaje?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar!',
+            cancelButtonText: 'Cancelar'
+          }).then( () => {
             this.seen = false;
             axios.delete(url + this.tipoMensaje.Id)
             .then(response => {
@@ -153,29 +158,29 @@
                 'error'
                 )
             })
-        })
+          })
 
 
+        }
+      },
+
+      close: function(){
+        this.seen = false;
+        EventBus.$emit("seleccionarId", undefined);
       }
     },
-
-    close: function(){
-      this.seen = false;
-      EventBus.$emit("seleccionarId", undefined);
-    }
-  },
-  created() {
-    this.seen = true;
-    this.tipoMensaje = this.$parent.tipoMensaje;
-    this.tipoMensajeBackUp = {
-      Nombre: this.tipoMensaje.Nombre,
-      Fichero:  this.tipoMensaje.Fichero,
-      Destacado: this.tipoMensaje.Destacado,
-      Base: this.tipoMensaje.Base
-    };
-    this.idSeleccionado = this.$parent.idSeleccionado;
-  },
-}
+    created() {
+      this.seen = true;
+      this.tipoMensaje = this.$parent.tipoMensaje;
+      this.tipoMensajeBackUp = {
+        Nombre: this.tipoMensaje.Nombre,
+        Fichero:  this.tipoMensaje.Fichero,
+        Destacado: this.tipoMensaje.Destacado,
+        Base: this.tipoMensaje.Base
+      };
+      this.idSeleccionado = this.$parent.idSeleccionado;
+    },
+  }
 </script>
 
 <style>

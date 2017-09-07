@@ -54,7 +54,7 @@
           if(p.Id == id){
             let tipoMensaje = {
               Nombre: p.Nombre,
-              Director: p.Director,
+              Fichero: p.Fichero,
               Destacado: p.Destacado,
               Base: p.Base,
               Id: p.Id
