@@ -4,8 +4,8 @@
       <h1 class="col-sm-12">Formulario Mensaje <a class="close" v-on:click="close">&times;</a></h1>
       <div class="form-group" v-if="tipos && tipos.length">
         <label  class="control-label">Tipo de mensaje:</label>
-        <select id="tipo" name="tipoMensaje" class="form-control" v-on:change="seleccionarTipo">
-          <option v-for="tipoMensaje in tipos" v-bind:id="tipoMensaje.Nombre" v-bind:value="tipoMensaje.Nombre">{{tipoMensaje.Nombre}}</option>
+        <select id="tipo" name="tipoMensaje" class="form-control" v-on:change="seleccionarTipo" v-model="mensaje.TipoMensaje">
+        <option v-for="tipoMensaje in tipos" v-bind:id="tipoMensaje.Nombre" v-bind:value="tipoMensaje.Nombre">{{tipoMensaje.Nombre}}</option>
         </select>
       </div>
       <div v-else>
@@ -148,23 +148,27 @@
           '',
           'Operacion completada con exito!',
           'success'
+          ).then( () =>  {
+            EventBus.$emit("updateMensaje", this.tipoMensaje);
+          }
+
+
           );
-        EventBus.$emit("updateMensaje", this.mensaje);
-      },
-      cambioArchivo: function(e){
-        this.mensaje.Archivo = e.target.value;
-      },
-      eliminar: function(){
-        if(this.mensaje.Id != -1){
-          swal({
-            title: '¿Quieres eliminar el mensaje?',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Si, eliminar!',
-            cancelButtonText: 'Cancelar'
-          }).then( () => {
+        },
+        cambioArchivo: function(e){
+          this.mensaje.Archivo = e.target.value;
+        },
+        eliminar: function(){
+          if(this.mensaje.Id != -1){
+            swal({
+              title: '¿Quieres eliminar el mensaje?',
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Si, eliminar!',
+              cancelButtonText: 'Cancelar'
+            }).then( () => {
               this.seen = false;
               axios.delete(url + this.mensaje.Id)
               .then(response => {
@@ -182,56 +186,56 @@
                   'error'
                   )
               })
-          })
+            })
 
 
+          }
         }
+      },
+
+      created() {
+        this.seen = true;
+        this.mensaje = this.$parent.mensaje;
+        if(!this.mensaje.TipoMensaje){
+          this.mensaje.TipoMensaje = {};
+        }
+        this.idSeleccionado = this.$parent.idSeleccionado;
+        this.mensajeBackUp = {
+          Destinatario: this.mensaje.fDestinatario,
+          Asunto:  this.mensaje.Asunto,
+          Contenido: this.mensaje.Contenido,
+          Archivo:  this.mensaje.Archivo,
+          Destacado: this.mensaje.Destacado
+        };
+        let url = config.address + 'TipoMensaje/';
+        axios.get(url)
+        .then(response => {
+          this.tipos = response.data;
+          this.mensaje.TipoMensaje = response.data[0].Nombre;
+        })
       }
-    },
+    }
 
-    created() {
-      this.seen = true;
-      this.mensaje = this.$parent.mensaje;
-      if(!this.mensaje.TipoMensaje){
-        this.mensaje.TipoMensaje = {};
+    function isFormularioValido(data){
+      let mensajeVal='';
+      /*if(data.TipoMensaje || data.TipoMensaje == ""){
+        return 'Debes seleccionar un tipo de mensaje. Si no existe ninguno crea uno en la pestaña superior Tipo Mensaje'
+      }*/
+
+      if(!data.Destinatario || data.Destinatario.trim() == ''){
+        return 'El destinatario debe estar relleno.'
       }
-      this.idSeleccionado = this.$parent.idSeleccionado;
-      this.mensajeBackUp = {
-        Destinatario: this.mensaje.Destinatario,
-        Asunto:  this.mensaje.Asunto,
-        Contenido: this.mensaje.Contenido,
-        Archivo:  this.mensaje.Archivo,
-        Destacado: this.mensaje.Destacado
-      };
-      let url = config.address + 'TipoMensaje/';
-      axios.get(url)
-      .then(response => {
-        this.tipos = response.data;
-        this.mensaje.TipoMensaje = response.data[0].Nombre;
-      })
-    }
-  }
+      if(!data.Asunto || data.Asunto.trim() == ''){
+        return 'El asunto debe estar relleno'
+      }
 
-  function isFormularioValido(data){
-    let mensajeVal='';
-    if(data.TipoMensaje == undefined){
-      return 'Debes seleccionar un tipo de mensaje. Si no existe ninguno crea uno en la pestaña superior Tipo Mensaje'
-    }
+      if(!data.Contenido || data.Contenido.trim() == ''){
+        return 'El contenido debe estar relleno'
+      }
 
-    if(!data.Destinatario || data.Destinatario.trim() == ''){
-      return 'El destinatario debe estar relleno.'
-    }
-    if(!data.Asunto || data.Asunto.trim() == ''){
-      return 'El asunto debe estar relleno'
-    }
+      return '';
+    } 
+  </script>
 
-    if(!data.Contenido || data.Contenido.trim() == ''){
-      return 'El contenido debe estar relleno'
-    }
-
-    return '';
-  } 
-</script>
-
-<style>
-</style>
+  <style>
+  </style>
