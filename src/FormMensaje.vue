@@ -21,7 +21,7 @@
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2">Contenido:</label>
-        <input type="text" id="contenido" name="contenido" class="form-control" v-model:value="mensaje.Contenido"/>   
+        <textarea rows="4" id="contenido" name="contenido" class="form-control" v-model:value="mensaje.Contenido"/>   
       </div>
       <div class="form-group" v-if="permiteFicheros == true">
         <label class="control-label col-sm-2">Archivo:</label>
@@ -140,8 +140,6 @@
             this.mensaje.TipoMensaje = this.tipos[index].Nombre;
             this.permiteDestacados = this.tipos[index].Destacado;
             this.permiteFicheros = this.tipos[index].Fichero;
-            console.log(this.permiteDestacados);
-            console.log(this.permiteFicheros);
           }
         });
       },
